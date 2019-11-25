@@ -1,6 +1,8 @@
-package pl.filipiak.jakub.training.fileintegration;
+package pl.filipiak.jakub.training.fileintegration.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.InboundChannelAdapter;
@@ -18,18 +20,29 @@ import org.springframework.integration.metadata.ConcurrentMetadataStore;
 import org.springframework.integration.metadata.PropertiesPersistingMetadataStore;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
+import pl.filipiak.jakub.training.fileintegration.config.properties.FileIntegrationProperties;
 
 import java.io.File;
 
 @Configuration
-public class IntegrationConfig {
+@EnableConfigurationProperties(FileIntegrationProperties.class)
+public class FileIntegrationConfig {
 
-    @Value("${user.variables.integration.file.storage.directory}")
-    private String INPUT_DIR;
-    @Value("${user.variables.integration.file.accept.pattern}")
-    private String FILE_PATTERN;
-    @Value("${user.variables.integration.file.metadata.key.prefix}")
-    private String KEY_PREFIX;
+    private static Logger logger = LoggerFactory.getLogger(FileIntegrationConfig.class);
+
+    private final FileIntegrationProperties fileIntegrationProperties;
+    private final String INTERVAL_IN_MILLIS = "10000";
+    private final String INPUT_DIR;
+    private final String FILE_PATTERN;
+    private final String KEY_PREFIX;
+
+    public FileIntegrationConfig(FileIntegrationProperties fileIntegrationProperties) {
+        this.fileIntegrationProperties = fileIntegrationProperties;
+
+        INPUT_DIR = this.fileIntegrationProperties.getStorageDirectory();
+        FILE_PATTERN = this.fileIntegrationProperties.getAcceptPattern();
+        KEY_PREFIX = this.fileIntegrationProperties.getMetadataKeyPrefix();
+    }
 
     @Bean
     public MessageChannel fileChannel() {
@@ -37,7 +50,7 @@ public class IntegrationConfig {
     }
 
     @Bean
-    @InboundChannelAdapter(value = "fileChannel", poller = @Poller(fixedDelay = "1000"))
+    @InboundChannelAdapter(value = "fileChannel", poller = @Poller(fixedDelay = INTERVAL_IN_MILLIS))
     public MessageSource<File> fileReadingMessageSource() {
         FileReadingMessageSource source = new FileReadingMessageSource();
         source.setDirectory(new File(INPUT_DIR));
@@ -50,7 +63,7 @@ public class IntegrationConfig {
     public MessageHandler messageHandler() {
         return message -> {
             File file = (File) message.getPayload();
-            System.out.println("New file: " + file.getAbsolutePath());
+            logger.info("New file: " + file.getAbsolutePath());
         };
     }
 

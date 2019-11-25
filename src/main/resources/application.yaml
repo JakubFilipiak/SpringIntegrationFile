@@ -1,0 +1,6 @@
+user-variables:
+  integration:
+    files:
+      storage-directory: files_dir
+      accept-pattern: '*.txt'
+      metadata-key-prefix: key_prefix_
