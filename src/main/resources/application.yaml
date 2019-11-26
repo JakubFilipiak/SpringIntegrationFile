@@ -1,6 +1,14 @@
 user-variables:
   integration:
-    files:
-      storage-directory: files_dir
-      accept-pattern: '*.txt'
-      metadata-key-prefix: key_prefix_
+    directories-scan-configs:
+      config1:
+        enabled: true
+        storage-directory: files_dir
+        file-accept-pattern: '(.+)+(\.(txt))'
+        metadata-key-prefix: key_prefix_
+      config2:
+        enabled: true
+        storage-directory: files_dir2
+        file-accept-pattern: '(.+)+(\.(txt|bmp))'
+        metadata-key-prefix: key_prefix_
+

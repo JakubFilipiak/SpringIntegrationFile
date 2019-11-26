@@ -9,14 +9,14 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "user-variables.integration.files")
 @Validated
-public class FileIntegrationProperties {
+@ConfigurationProperties(prefix = "user-variables.integration.directories-scan-configs.config1")
+public class Directory1ConfigProperties {
 
     @NotBlank
     private String storageDirectory;
     @NotBlank
-    private String acceptPattern;
+    private String fileAcceptPattern;
     @NotBlank
     private String metadataKeyPrefix;
 }
