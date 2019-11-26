@@ -1,7 +1,6 @@
 package pl.filipiak.jakub.training.fileintegration.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,11 +23,10 @@ import pl.filipiak.jakub.training.fileintegration.config.properties.FileIntegrat
 
 import java.io.File;
 
+@Slf4j
 @Configuration
 @EnableConfigurationProperties(FileIntegrationProperties.class)
 public class FileIntegrationConfig {
-
-    private static Logger logger = LoggerFactory.getLogger(FileIntegrationConfig.class);
 
     private final String INTERVAL_IN_MILLIS = "10000";
     private final String INPUT_DIR;
@@ -60,7 +58,7 @@ public class FileIntegrationConfig {
     public MessageHandler messageHandler() {
         return message -> {
             File file = (File) message.getPayload();
-            logger.info("New file: " + file.getAbsolutePath());
+            log.info("New file: " + file.getAbsolutePath());
         };
     }
 
