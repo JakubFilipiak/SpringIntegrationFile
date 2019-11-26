@@ -30,18 +30,15 @@ public class FileIntegrationConfig {
 
     private static Logger logger = LoggerFactory.getLogger(FileIntegrationConfig.class);
 
-    private final FileIntegrationProperties fileIntegrationProperties;
     private final String INTERVAL_IN_MILLIS = "10000";
     private final String INPUT_DIR;
     private final String FILE_PATTERN;
     private final String KEY_PREFIX;
 
     public FileIntegrationConfig(FileIntegrationProperties fileIntegrationProperties) {
-        this.fileIntegrationProperties = fileIntegrationProperties;
-
-        INPUT_DIR = this.fileIntegrationProperties.getStorageDirectory();
-        FILE_PATTERN = this.fileIntegrationProperties.getAcceptPattern();
-        KEY_PREFIX = this.fileIntegrationProperties.getMetadataKeyPrefix();
+        INPUT_DIR = fileIntegrationProperties.getStorageDirectory();
+        FILE_PATTERN = fileIntegrationProperties.getAcceptPattern();
+        KEY_PREFIX = fileIntegrationProperties.getMetadataKeyPrefix();
     }
 
     @Bean
