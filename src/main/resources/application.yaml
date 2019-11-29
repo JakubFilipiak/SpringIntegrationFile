@@ -1,14 +1,48 @@
+server:
+  port: 8080
+spring:
+  output:
+    ansi:
+      enabled: always
+  rabbitmq:
+    addresses: amqp://irwcytix:ccCxwBKPjgiXfwuD2803uZdjuhT67O8I@cat.rmq.cloudamqp.com/irwcytix
+  cloud:
+    stream:
+      bindings:
+        fileInfoChannel:
+          destination: fileInfo
 user-variables:
   integration:
     directories-scan-configs:
       config1:
         enabled: true
-        storage-directory: files_dir
-        file-accept-pattern: '(.+)+(\.(txt))'
+        storage-directory: files_dir1
+        directories-validation-enabled: false
+        directories-accept-pattern: '(.+)+(dir)'
+        file1-accept-pattern: '(.+)+(\.(txt))'
+        file2-accept-pattern: '(.+)+(\.(csv))'
         metadata-key-prefix: key_prefix_
       config2:
         enabled: true
         storage-directory: files_dir2
-        file-accept-pattern: '(.+)+(\.(txt|bmp))'
+        directories-validation-enabled: false
+        directories-accept-pattern: '(.+)+(dir)'
+        file1-accept-pattern: '(.+)+(\.(txt))'
+        file2-accept-pattern: '(.+)+(\.(csv))'
         metadata-key-prefix: key_prefix_
-
+      config3:
+        enabled: true
+        storage-directory: files_dir3
+        directories-validation-enabled: false
+        directories-accept-pattern: '(.+)+(dir)'
+        file1-accept-pattern: '(.+)+(\.(txt))'
+        file2-accept-pattern: '(.+)+(\.(csv))'
+        metadata-key-prefix: key_prefix_
+      config4:
+        enabled: true
+        storage-directory: files_dir4
+        directories-validation-enabled: false
+        directories-accept-pattern: '(.+)+(dir)'
+        file1-accept-pattern: '(.+)+(\.(txt))'
+        file2-accept-pattern: '(.+)+(\.(csv))'
+        metadata-key-prefix: key_prefix_
