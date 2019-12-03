@@ -12,8 +12,8 @@ spring:
   cloud:
     stream:
       bindings:
-        fileInfoChannel:
-          destination: fileInfo
+        output:
+          destination: fileInfoExchange
 user-variables:
   integration:
     directories-scan-configs:

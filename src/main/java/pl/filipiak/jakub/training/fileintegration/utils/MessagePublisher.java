@@ -1,21 +1,23 @@
 package pl.filipiak.jakub.training.fileintegration.utils;
 
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
+@EnableBinding(Source.class)
 public class MessagePublisher {
 
-    private MessageChannel channel;
+    private Source source;
 
-    public MessagePublisher(FileInfoBinding binding) {
-        this.channel = binding.fileInfo();
+    public MessagePublisher(Source source) {
+        this.source = source;
     }
 
     public void publishMessage(String content) {
         Message<String> message = MessageBuilder.withPayload(content).build();
-        this.channel.send(message);
+        source.output().send(message);
     }
 }
