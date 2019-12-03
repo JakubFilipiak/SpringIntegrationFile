@@ -5,7 +5,9 @@ spring:
     ansi:
       enabled: always
   rabbitmq:
-    addresses: amqp://irwcytix:ccCxwBKPjgiXfwuD2803uZdjuhT67O8I@cat.rmq.cloudamqp.com/irwcytix
+    username: guest
+    password: guest
+    port: 5672
   cloud:
     stream:
       bindings:
