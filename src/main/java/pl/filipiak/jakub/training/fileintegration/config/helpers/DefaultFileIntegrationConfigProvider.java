@@ -14,47 +14,44 @@ import org.springframework.messaging.MessageHandler;
 import pl.filipiak.jakub.training.fileintegration.config.filters.AcceptDirectoryByRegexFilter;
 import pl.filipiak.jakub.training.fileintegration.config.filters.AcceptEveryDirectoryFilter;
 import pl.filipiak.jakub.training.fileintegration.config.filters.AcceptFileOnlyOnceFilter;
+import pl.filipiak.jakub.training.fileintegration.config.properties.helpers.AbstractDirConfigProperties;
 import pl.filipiak.jakub.training.fileintegration.utils.FileSearchingMessageHandler;
 import pl.filipiak.jakub.training.fileintegration.utils.MessagePublisher;
 
 import java.io.File;
 
-public abstract class AbstractFileIntegrationConfig {
+public class DefaultFileIntegrationConfigProvider {
 
     private String configId;
-    private String configName;
-
-    protected static final String INTERVAL_IN_MILLIS = "1000";
     private String inputDir;
     private String file1Pattern;
     private String file2Pattern;
+    private String metadataStoreFileName;
     private String metadataKeyPrefix;
     private boolean dirValidationEnabled;
     private String dirPattern;
 
-    public AbstractFileIntegrationConfig(String configId,
-                                         String configName,
-                                         String inputDir,
-                                         String file1Pattern,
-                                         String file2Pattern,
-                                         String metadataKeyPrefix,
-                                         boolean dirValidationEnabled,
-                                         String dirPattern) {
-        this.configId = configId;
-        this.configName = configName;
-        this.inputDir = inputDir;
-        this.file1Pattern = file1Pattern;
-        this.file2Pattern = file2Pattern;
-        this.metadataKeyPrefix = metadataKeyPrefix;
-        this.dirValidationEnabled = dirValidationEnabled;
-        this.dirPattern = dirPattern;
+    private MessagePublisher messagePublisher;
+
+    public DefaultFileIntegrationConfigProvider(AbstractDirConfigProperties properties,
+                                                MessagePublisher messagePublisher) {
+        this.configId = properties.getId();
+        this.inputDir = properties.getStorageDirectory();
+        this.file1Pattern = properties.getFile1AcceptPattern();
+        this.file2Pattern = properties.getFile2AcceptPattern();
+        this.metadataStoreFileName = properties.getMetadataStoreFileName();
+        this.metadataKeyPrefix = properties.getMetadataKeyPrefix();
+        this.dirValidationEnabled = properties.isDirectoriesValidationEnabled();
+        this.dirPattern = properties.getDirectoriesAcceptPattern();
+
+        this.messagePublisher = messagePublisher;
     }
 
-    protected MessageChannel createMessageChannel() {
+    public MessageChannel createMessageChannel() {
         return new DirectChannel();
     }
 
-    protected MessageSource<File> createFileReadingMessageSource(
+    public MessageSource<File> createFileReadingMessageSource(
             ConcurrentMetadataStore metadataStore) {
         FileReadingMessageSource source = new FileReadingMessageSource();
         source.setDirectory(new File(inputDir));
@@ -62,14 +59,24 @@ public abstract class AbstractFileIntegrationConfig {
         return source;
     }
 
-    protected RecursiveDirectoryScanner createRecursiveDirectoryScanner(
+    public ConcurrentMetadataStore createMetadataStore() {
+        PropertiesPersistingMetadataStore metadataStore = new PropertiesPersistingMetadataStore();
+        metadataStore.setFileName(metadataStoreFileName + ".properties");
+        return metadataStore;
+    }
+
+    public MessageHandler createMessageHandler() {
+        return new FileSearchingMessageHandler(configId, file1Pattern, file2Pattern, messagePublisher);
+    }
+
+    private RecursiveDirectoryScanner createRecursiveDirectoryScanner(
             ConcurrentMetadataStore metadataStore) {
         RecursiveDirectoryScanner scanner = new RecursiveDirectoryScanner();
         scanner.setFilter(createCompositeFileListFilter(metadataStore));
         return scanner;
     }
 
-    protected CompositeFileListFilter<File> createCompositeFileListFilter(
+    private CompositeFileListFilter<File> createCompositeFileListFilter(
             ConcurrentMetadataStore metadataStore) {
         CompositeFileListFilter<File> filters = new CompositeFileListFilter<>();
         filters.addFilter(createAcceptDirectoriesFilter());
@@ -77,24 +84,14 @@ public abstract class AbstractFileIntegrationConfig {
         return filters;
     }
 
-    protected AbstractDirectoryAwareFileListFilter<File> createAcceptDirectoriesFilter() {
+    private AbstractDirectoryAwareFileListFilter<File> createAcceptDirectoriesFilter() {
         if (dirValidationEnabled && dirPattern != null && !dirPattern.isEmpty())
             return new AcceptDirectoryByRegexFilter(dirPattern);
         return new AcceptEveryDirectoryFilter();
     }
 
-    protected AbstractPersistentAcceptOnceFileListFilter<File> createAcceptFilesOnlyOnceFilter(
+    private AbstractPersistentAcceptOnceFileListFilter<File> createAcceptFilesOnlyOnceFilter(
             ConcurrentMetadataStore metadataStore) {
         return new AcceptFileOnlyOnceFilter(metadataStore, metadataKeyPrefix);
-    }
-
-    protected ConcurrentMetadataStore createMetadataStore() {
-        PropertiesPersistingMetadataStore metadataStore = new PropertiesPersistingMetadataStore();
-        metadataStore.setFileName(configName + "-metadata-store.properties");
-        return metadataStore;
-    }
-
-    protected MessageHandler createMessageHandler(MessagePublisher messagePublisher) {
-        return new FileSearchingMessageHandler(configId, file1Pattern, file2Pattern, messagePublisher);
     }
 }

@@ -13,11 +13,15 @@ import javax.validation.constraints.NotNull;
 public abstract class AbstractDirConfigProperties {
 
     @NotBlank
+    protected String id;
+    @NotBlank
     protected String storageDirectory;
     @NotBlank
     protected String file1AcceptPattern;
     @NotBlank
     protected String file2AcceptPattern;
+    @NotBlank
+    protected String metadataStoreFileName;
     @NotBlank
     protected String metadataKeyPrefix;
     @NotNull

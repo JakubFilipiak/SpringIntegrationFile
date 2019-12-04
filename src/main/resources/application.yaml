@@ -19,33 +19,41 @@ user-variables:
     directories-scan-configs:
       config1:
         enabled: true
+        id: 1
         storage-directory: files_dir1
         directories-validation-enabled: false
         directories-accept-pattern: '(.+)+(dir)'
         file1-accept-pattern: '(.+)+(\.(txt))'
         file2-accept-pattern: '(.+)+(\.(csv))'
+        metadata-store-file-name: metadata1
         metadata-key-prefix: key_prefix_
       config2:
         enabled: true
+        id: 2
         storage-directory: files_dir2
         directories-validation-enabled: false
         directories-accept-pattern: '(.+)+(dir)'
         file1-accept-pattern: '(.+)+(\.(txt))'
         file2-accept-pattern: '(.+)+(\.(csv))'
+        metadata-store-file-name: metadata2
         metadata-key-prefix: key_prefix_
       config3:
         enabled: true
+        id: 3
         storage-directory: files_dir3
         directories-validation-enabled: false
         directories-accept-pattern: '(.+)+(dir)'
         file1-accept-pattern: '(.+)+(\.(txt))'
         file2-accept-pattern: '(.+)+(\.(csv))'
+        metadata-store-file-name: metadata3
         metadata-key-prefix: key_prefix_
       config4:
         enabled: true
+        id: 4
         storage-directory: files_dir4
         directories-validation-enabled: false
         directories-accept-pattern: '(.+)+(dir)'
         file1-accept-pattern: '(.+)+(\.(txt))'
         file2-accept-pattern: '(.+)+(\.(csv))'
+        metadata-store-file-name: metadata4
         metadata-key-prefix: key_prefix_

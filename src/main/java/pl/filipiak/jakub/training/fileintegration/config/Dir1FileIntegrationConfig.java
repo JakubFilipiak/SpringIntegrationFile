@@ -11,7 +11,7 @@ import org.springframework.integration.core.MessageSource;
 import org.springframework.integration.metadata.ConcurrentMetadataStore;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
-import pl.filipiak.jakub.training.fileintegration.config.helpers.AbstractFileIntegrationConfig;
+import pl.filipiak.jakub.training.fileintegration.config.helpers.DefaultFileIntegrationConfigProvider;
 import pl.filipiak.jakub.training.fileintegration.config.properties.Dir1ConfigProperties;
 import pl.filipiak.jakub.training.fileintegration.utils.MessagePublisher;
 
@@ -23,41 +23,35 @@ import java.io.File;
         name = "enabled",
         havingValue = "true")
 @EnableConfigurationProperties(Dir1ConfigProperties.class)
-public class Dir1FileIntegrationConfig extends AbstractFileIntegrationConfig {
+public class Dir1FileIntegrationConfig {
 
-    private MessagePublisher messagePublisher;
+    private final String POLLING_INTERVAL_IN_MILLIS = "1000";
+
+    private DefaultFileIntegrationConfigProvider configProvider;
 
     public Dir1FileIntegrationConfig(Dir1ConfigProperties properties, MessagePublisher messagePublisher) {
-        super("1",
-                "config1",
-                properties.getStorageDirectory(),
-                properties.getFile1AcceptPattern(),
-                properties.getFile2AcceptPattern(),
-                properties.getMetadataKeyPrefix(),
-                properties.isDirectoriesValidationEnabled(),
-                properties.getDirectoriesAcceptPattern());
-        this.messagePublisher = messagePublisher;
+        this.configProvider = new DefaultFileIntegrationConfigProvider(properties, messagePublisher);
     }
 
     @Bean
     public MessageChannel directory1Channel() {
-        return super.createMessageChannel();
+        return configProvider.createMessageChannel();
     }
 
     @Bean
-    @InboundChannelAdapter(value = "directory1Channel", poller = @Poller(fixedDelay = INTERVAL_IN_MILLIS))
+    @InboundChannelAdapter(value = "directory1Channel", poller = @Poller(fixedDelay = POLLING_INTERVAL_IN_MILLIS))
     public MessageSource<File> directory1FileReadingMessageSource() {
-        return super.createFileReadingMessageSource(directory1MetadataStore());
+        return configProvider.createFileReadingMessageSource(directory1MetadataStore());
     }
 
     @Bean
     public ConcurrentMetadataStore directory1MetadataStore() {
-        return super.createMetadataStore();
+        return configProvider.createMetadataStore();
     }
 
     @Bean
     @ServiceActivator(inputChannel = "directory1Channel")
     public MessageHandler directory1MessageHandler() {
-        return super.createMessageHandler(messagePublisher);
+        return configProvider.createMessageHandler();
     }
 }
