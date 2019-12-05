@@ -13,13 +13,14 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import pl.filipiak.jakub.training.fileintegration.config.helpers.DefaultFileIntegrationConfigProvider;
 import pl.filipiak.jakub.training.fileintegration.config.properties.Dir4ConfigProperties;
+import pl.filipiak.jakub.training.fileintegration.utils.FileSearcherResultsValidator;
 import pl.filipiak.jakub.training.fileintegration.utils.MessagePublisher;
 
 import java.io.File;
 
 @Configuration
 @ConditionalOnProperty(
-        prefix = "user-variables.integration.directories-scan-configs.config3",
+        prefix = "user-variables.integration.directories-scan-configs.config4",
         name = "enabled",
         havingValue = "true")
 @EnableConfigurationProperties(Dir4ConfigProperties.class)
@@ -29,8 +30,13 @@ public class Dir4FileIntegrationConfig {
 
     private DefaultFileIntegrationConfigProvider configProvider;
 
-    public Dir4FileIntegrationConfig(Dir4ConfigProperties properties, MessagePublisher messagePublisher) {
-        this.configProvider = new DefaultFileIntegrationConfigProvider(properties, messagePublisher);
+    public Dir4FileIntegrationConfig(Dir4ConfigProperties properties,
+                                     FileSearcherResultsValidator resultsValidator,
+                                     MessagePublisher messagePublisher) {
+        this.configProvider = new DefaultFileIntegrationConfigProvider(
+                properties,
+                resultsValidator,
+                messagePublisher);
     }
 
     @Bean

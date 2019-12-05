@@ -13,6 +13,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import pl.filipiak.jakub.training.fileintegration.config.helpers.DefaultFileIntegrationConfigProvider;
 import pl.filipiak.jakub.training.fileintegration.config.properties.Dir3ConfigProperties;
+import pl.filipiak.jakub.training.fileintegration.utils.FileSearcherResultsValidator;
 import pl.filipiak.jakub.training.fileintegration.utils.MessagePublisher;
 
 import java.io.File;
@@ -29,8 +30,13 @@ public class Dir3FileIntegrationConfig {
 
     private DefaultFileIntegrationConfigProvider configProvider;
 
-    public Dir3FileIntegrationConfig(Dir3ConfigProperties properties, MessagePublisher messagePublisher) {
-        this.configProvider = new DefaultFileIntegrationConfigProvider(properties, messagePublisher);
+    public Dir3FileIntegrationConfig(Dir3ConfigProperties properties,
+                                     FileSearcherResultsValidator resultsValidator,
+                                     MessagePublisher messagePublisher) {
+        this.configProvider = new DefaultFileIntegrationConfigProvider(
+                properties,
+                resultsValidator,
+                messagePublisher);
     }
 
     @Bean

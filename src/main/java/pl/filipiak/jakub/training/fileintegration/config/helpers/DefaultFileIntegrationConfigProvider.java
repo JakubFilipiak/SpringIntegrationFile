@@ -15,6 +15,7 @@ import pl.filipiak.jakub.training.fileintegration.config.filters.AcceptDirectory
 import pl.filipiak.jakub.training.fileintegration.config.filters.AcceptEveryDirectoryFilter;
 import pl.filipiak.jakub.training.fileintegration.config.filters.AcceptFileOnlyOnceFilter;
 import pl.filipiak.jakub.training.fileintegration.config.properties.helpers.AbstractDirConfigProperties;
+import pl.filipiak.jakub.training.fileintegration.utils.FileSearcherResultsValidator;
 import pl.filipiak.jakub.training.fileintegration.utils.FileSearchingMessageHandler;
 import pl.filipiak.jakub.training.fileintegration.utils.MessagePublisher;
 
@@ -31,9 +32,11 @@ public class DefaultFileIntegrationConfigProvider {
     private boolean dirValidationEnabled;
     private String dirPattern;
 
+    private FileSearcherResultsValidator resultsValidator;
     private MessagePublisher messagePublisher;
 
     public DefaultFileIntegrationConfigProvider(AbstractDirConfigProperties properties,
+                                                FileSearcherResultsValidator resultsValidator,
                                                 MessagePublisher messagePublisher) {
         this.configId = properties.getId();
         this.inputDir = properties.getStorageDirectory();
@@ -44,6 +47,7 @@ public class DefaultFileIntegrationConfigProvider {
         this.dirValidationEnabled = properties.isDirectoriesValidationEnabled();
         this.dirPattern = properties.getDirectoriesAcceptPattern();
 
+        this.resultsValidator = resultsValidator;
         this.messagePublisher = messagePublisher;
     }
 
@@ -66,7 +70,12 @@ public class DefaultFileIntegrationConfigProvider {
     }
 
     public MessageHandler createMessageHandler() {
-        return new FileSearchingMessageHandler(configId, file1Pattern, file2Pattern, messagePublisher);
+        return new FileSearchingMessageHandler(
+                configId,
+                file1Pattern,
+                file2Pattern,
+                resultsValidator,
+                messagePublisher);
     }
 
     private RecursiveDirectoryScanner createRecursiveDirectoryScanner(
