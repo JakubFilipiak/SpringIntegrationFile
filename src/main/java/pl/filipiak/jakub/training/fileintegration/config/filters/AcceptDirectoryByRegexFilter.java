@@ -1,16 +1,14 @@
 package pl.filipiak.jakub.training.fileintegration.config.filters;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.integration.file.filters.AbstractDirectoryAwareFileListFilter;
 
 import java.io.File;
 
+@RequiredArgsConstructor
 public class AcceptDirectoryByRegexFilter extends AbstractDirectoryAwareFileListFilter<File> {
 
-    private final String DIR_PATTERN;
-
-    public AcceptDirectoryByRegexFilter(String directoryPattern) {
-        DIR_PATTERN = directoryPattern;
-    }
+    private final String dirPattern;
 
     @Override
     protected boolean isDirectory(File file) {
@@ -19,6 +17,6 @@ public class AcceptDirectoryByRegexFilter extends AbstractDirectoryAwareFileList
 
     @Override
     public boolean accept(File file) {
-        return isDirectory(file) && file.getName().matches(DIR_PATTERN);
+        return isDirectory(file) && file.getName().matches(dirPattern);
     }
 }

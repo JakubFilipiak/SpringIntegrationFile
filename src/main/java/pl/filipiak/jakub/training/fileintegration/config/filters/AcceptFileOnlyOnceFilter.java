@@ -9,7 +9,7 @@ public class AcceptFileOnlyOnceFilter extends AbstractPersistentAcceptOnceFileLi
 
     public AcceptFileOnlyOnceFilter(ConcurrentMetadataStore metadataStore, String keyPrefix) {
         super(metadataStore, keyPrefix);
-        super.setFlushOnUpdate(true);
+        this.setFlushOnUpdate(true);
     }
 
     @Override
@@ -29,6 +29,11 @@ public class AcceptFileOnlyOnceFilter extends AbstractPersistentAcceptOnceFileLi
 
     @Override
     protected boolean isEqual(File file, String value) {
+        // Do not check if file is modified.
+        // Return true means, that old and new file content are the same,
+        // so file modifications are ignored.
+        // If file was accepted in any time, it will never be accepted again,
+        // even if it has been modified after acceptance.
         return true;
     }
 }

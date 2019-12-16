@@ -1,5 +1,6 @@
-package pl.filipiak.jakub.training.fileintegration.utils;
+package pl.filipiak.jakub.training.fileintegration.integration;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.messaging.Source;
@@ -10,15 +11,12 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 @EnableBinding(Source.class)
 public class MessagePublisher {
 
-    private Source source;
-
-    public MessagePublisher(Source source) {
-        this.source = source;
-    }
+    private final Source source;
 
     public void publishWithPayload(PathsContainingMessagePayload payload) {
         buildMessage(payload).ifPresent(message -> {

@@ -10,8 +10,6 @@ import java.util.regex.Pattern;
 @Component
 public class FileSearcherResultsValidator {
 
-    private final int REQUIRED_NUMBER_OF_PATTERNS = 2;
-
     public boolean isCorrect(Map<Pattern, List<Path>> results) {
         return isNumberOfPatternsCorrect(results) &&
                 isNotMoreThanOnePathForOnePattern(results) &&
@@ -19,7 +17,8 @@ public class FileSearcherResultsValidator {
     }
 
     private boolean isNumberOfPatternsCorrect(Map<Pattern, List<Path>> results) {
-        return results.keySet().size() == REQUIRED_NUMBER_OF_PATTERNS;
+        final int requiredNumberOfPatterns = 2;
+        return results.keySet().size() == requiredNumberOfPatterns;
     }
 
     private boolean isNotMoreThanOnePathForOnePattern(Map<Pattern, List<Path>> results) {

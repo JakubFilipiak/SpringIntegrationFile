@@ -13,14 +13,14 @@ import java.util.stream.Collectors;
 
 public class FilesByPatternsSearcher {
 
-    private final File DIR;
-    private final List<Pattern> PATTERNS;
+    private final File dir;
+    private final List<Pattern> patterns;
 
     private Map<Pattern, List<Path>> results = new HashMap<>();
 
     public FilesByPatternsSearcher(File directory, List<Pattern> patterns) {
-        this.DIR = directory;
-        this.PATTERNS = patterns;
+        this.dir = directory;
+        this.patterns = patterns;
         search();
     }
 
@@ -29,7 +29,7 @@ public class FilesByPatternsSearcher {
     }
 
     private void search() {
-        PATTERNS.forEach(pattern -> {
+        patterns.forEach(pattern -> {
             List<Path> foundFilesPaths = findFilesMatchingAPattern(pattern).stream()
                     .map(File::toPath)
                     .collect(Collectors.toList());
@@ -40,6 +40,6 @@ public class FilesByPatternsSearcher {
     private List<File> findFilesMatchingAPattern(Pattern pattern) {
         DefaultDirectoryScanner scanner = new DefaultDirectoryScanner();
         scanner.setFilter(new RegexPatternFileListFilter(pattern));
-        return scanner.listFiles(DIR);
+        return scanner.listFiles(dir);
     }
 }

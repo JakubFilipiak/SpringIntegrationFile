@@ -1,4 +1,4 @@
-package pl.filipiak.jakub.training.fileintegration.utils;
+package pl.filipiak.jakub.training.fileintegration.integration;
 
 import lombok.Data;
 import lombok.NonNull;
